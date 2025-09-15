@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>健康信息管理 - 学生信息管理系统</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-heartbeat me-2"></i>健康信息管理
+                    </h2>
+                    <a href="/admin/health-records/add" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>添加健康信息
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 健康信息列表 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>健康信息列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>学生</th>
+                                        <th>身高(cm)</th>
+                                        <th>体重(kg)</th>
+                                        <th>血型</th>
+                                        <th>BMI</th>
+                                        <th>体检日期</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="record : ${healthRecords}">
+                                        <td th:text="${record.id}">1</td>
+                                        <td th:text="${record.student.name}">张三</td>
+                                        <td th:text="${record.height}">175.0</td>
+                                        <td th:text="${record.weight}">70.0</td>
+                                        <td th:text="${record.bloodTypeDisplayName}">A型</td>
+                                        <td th:text="${record.calculateBMI()}">22.86</td>
+                                        <td th:text="${#dates.format(record.checkDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                                        <td>
+                                            <a th:href="@{/admin/health-records/edit/{id}(id=${record.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    th:onclick="'deleteHealthRecord(' + ${record.id} + ')'">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <script>
+            function deleteHealthRecord(id) {
+                if (confirm('确定要删除这个健康信息吗？')) {
+                    // 这里应该调用删除API
+                    alert('删除功能待实现');
+                }
+            }
+        </script>
+    </th:block>
+</body>
+</html>

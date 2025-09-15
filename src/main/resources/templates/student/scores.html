@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>成绩查询 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-chart-line me-2"></i>成绩查询
+                    </h2>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 成绩列表 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>我的成绩
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>课程名称</th>
+                                        <th>课程代码</th>
+                                        <th>学分</th>
+                                        <th>成绩</th>
+                                        <th>绩点</th>
+                                        <th>等级</th>
+                                        <th>考试类型</th>
+                                        <th>学期</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="score : ${scores}">
+                                        <td th:text="${score.course.courseName}">计算机基础</td>
+                                        <td th:text="${score.course.courseCode}">CS101</td>
+                                        <td th:text="${score.course.credits}">3.0</td>
+                                        <td th:text="${score.score}">85.5</td>
+                                        <td th:text="${score.gradePoint}">3.0</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${score.score >= 90} ? 'bg-success' : (${score.score >= 80} ? 'bg-primary' : (${score.score >= 70} ? 'bg-warning' : (${score.score >= 60} ? 'bg-info' : 'bg-danger')))"
+                                                  th:text="${score.getGradeLevel()}">良好</span>
+                                        </td>
+                                        <td th:text="${score.examTypeDisplayName}">总评</td>
+                                        <td th:text="${score.semester}">2023-2024-1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 如果没有成绩 -->
+                        <div th:if="${#lists.isEmpty(scores)}" class="text-center py-4">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">暂无成绩信息</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 成绩统计 -->
+        <div class="row mt-4" th:if="${! #lists.isEmpty(scores)}">
+            <div class="col-md-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    平均成绩
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${averageScore}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    平均绩点
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${averageGPA}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-star fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    总学分
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalCredits}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

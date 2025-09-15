@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>学生管理 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-user-graduate me-2"></i>学生管理
+                    </h2>
+                    <a th:href="@{/admin/students/add}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>添加学生
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>学生列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>学号</th>
+                                        <th>姓名</th>
+                                        <th>性别</th>
+                                        <th>专业</th>
+                                        <th>班级</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="stu : ${students}">
+                                        <td th:text="${stu.studentNo}">2023001</td>
+                                        <td th:text="${stu.name}">张三</td>
+                                        <td th:text="${stu.gender}">男</td>
+                                        <td th:text="${stu.major}">计算机科学与技术</td>
+                                        <td th:text="${stu.className}">计科2023-1班</td>
+                                        <td>
+                                            <span class="badge bg-success" th:text="${stu.status}">在读</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/admin/students/edit/{id}(id=${stu.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 分页与每页大小 -->
+        <div class="row mt-3">
+           
+            <div class="col-md-6" th:if="${totalPages > 1}">
+                <nav>
+                    <ul class="pagination justify-content-end mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/students(page=${currentPage - 1}, size=${size}, studentNo=${studentNo}, name=${name}, major=${major}, className=${className}, status=${status})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}" th:classappend="${page == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/students(page=${page}, size=${size}, studentNo=${studentNo}, name=${name}, major=${major}, className=${className}, status=${status})}" th:text="${page}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/students(page=${currentPage + 1}, size=${size}, studentNo=${studentNo}, name=${name}, major=${major}, className=${className}, status=${status})}">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- 删除了重复的第二份HTML，保留单一布局渲染部分 -->

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>成绩管理 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-chart-line me-2"></i>成绩管理
+                    </h2>
+                    <a th:href="@{/admin/scores/add}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>添加成绩
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <!-- 筛选表单 -->
+                <div class="card shadow mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-search me-2"></i>筛选条件</h6>
+                    </div>
+                    <div class="card-body">
+                        <form class="row g-3" method="get" th:action="@{/admin/scores}">
+                            <div class="col-md-3">
+                                <label class="form-label">学生</label>
+                                <select class="form-select" name="studentId">
+                                    <option value="">全部学生</option>
+                                    <option th:each="s : ${students}" th:value="${s.id}" th:text="${s.name}" th:selected="${s.id == studentId}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">课程</label>
+                                <select class="form-select" name="courseId">
+                                    <option value="">全部课程</option>
+                                    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.courseName}" th:selected="${c.id == courseId}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">学期</label>
+                                <select class="form-select" name="semester">
+                                    <option value="">全部学期</option>
+                                    <option th:each="sem : ${semesters}" th:value="${sem}" th:text="${sem}" th:selected="${sem == semester}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">考试类型</label>
+                                <select class="form-select" name="examType">
+                                    <option value="">全部类型</option>
+                                    <option value="期末考试" th:selected="${examType == '期末考试'}">期末考试</option>
+                                    <option value="期中考试" th:selected="${examType == '期中考试'}">期中考试</option>
+                                    <option value="平时成绩" th:selected="${examType == '平时成绩'}">平时成绩</option>
+                                    <option value="总评" th:selected="${examType == '总评'}">总评</option>
+                                </select>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary me-2"><i class="fas fa-search me-1"></i>搜索</button>
+                                <a th:href="@{/admin/scores}" class="btn btn-secondary"><i class="fas fa-undo me-1"></i>重置</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>成绩列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>学生</th>
+                                        <th>课程</th>
+                                        <th>成绩</th>
+                                        <th>绩点</th>
+                                        <th>考试类型</th>
+                                        <th>学期</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="s : ${scores}">
+                                        <td th:text="${s.student.name}">张三</td>
+                                        <td th:text="${s.course.courseName}">计算机基础</td>
+                                        <td th:text="${s.score}">85.5</td>
+                                        <td th:text="${s.gradePoint}">3.0</td>
+                                        <td th:text="${s.examType}">总评</td>
+                                        <td th:text="${s.semester}">2023-2024-1</td>
+                                        <td>
+                                            <a th:href="@{/admin/scores/edit/{id}(id=${s.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 分页与每页大小 -->
+        <div class="row mt-3">
+            
+            <div class="col-md-6" th:if="${totalPages > 1}">
+                <nav>
+                    <ul class="pagination justify-content-end mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/scores(page=${currentPage - 1}, size=${size}, studentId=${studentId}, courseId=${courseId}, semester=${semester}, examType=${examType})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="p : ${#numbers.sequence(1, totalPages)}" th:classappend="${p == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/scores(page=${p}, size=${size}, studentId=${studentId}, courseId=${courseId}, semester=${semester}, examType=${examType})}" th:text="${p}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/scores(page=${currentPage + 1}, size=${size}, studentId=${studentId}, courseId=${courseId}, semester=${semester}, examType=${examType})}">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

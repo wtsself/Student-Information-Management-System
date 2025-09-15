@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>健康信息管理 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-heartbeat me-2"></i>健康信息管理
+                    </h2>
+                    <a th:href="@{/admin/health-records/add}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>添加健康信息
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <!-- 筛选表单 -->
+                <div class="card shadow mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-search me-2"></i>筛选条件</h6>
+                    </div>
+                    <div class="card-body">
+                        <form class="row g-3" method="get" th:action="@{/admin/health-records}">
+                            <div class="col-md-3">
+                                <label class="form-label">血型</label>
+                                <select class="form-select" name="bloodType">
+                                    <option value="">全部</option>
+                                    <option value="A" th:selected="${bloodType == 'A'}">A</option>
+                                    <option value="B" th:selected="${bloodType == 'B'}">B</option>
+                                    <option value="AB" th:selected="${bloodType == 'AB'}">AB</option>
+                                    <option value="O" th:selected="${bloodType == 'O'}">O</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">开始日期</label>
+                                <input type="date" class="form-control" name="startDate" th:value="${startDate}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">结束日期</label>
+                                <input type="date" class="form-control" name="endDate" th:value="${endDate}">
+                            </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary me-2"><i class="fas fa-search me-1"></i>搜索</button>
+                                <a th:href="@{/admin/health-records}" class="btn btn-secondary"><i class="fas fa-undo me-1"></i>重置</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>健康信息列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>学生</th>
+                                        <th>身高(cm)</th>
+                                        <th>体重(kg)</th>
+                                        <th>血型</th>
+                                        <th>BMI</th>
+                                        <th>体检日期</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="r : ${healthRecords}">
+                                        <td th:text="${r.student.name}">张三</td>
+                                        <td th:text="${r.height}">175.0</td>
+                                        <td th:text="${r.weight}">70.0</td>
+                                        <td th:text="${r.bloodType}">A</td>
+                                        <td th:text="${r.calculateBMI()}">22.86</td>
+                                        <td th:text="${r.checkDate != null ? #temporals.format(r.checkDate, 'yyyy-MM-dd') : ''}">2024-01-01</td>
+                                        <td>
+                                            <a th:href="@{/admin/health-records/edit/{id}(id=${r.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 分页与每页大小 -->
+        <div class="row mt-3">
+          
+            <div class="col-md-6" th:if="${totalPages > 1}">
+                <nav>
+                    <ul class="pagination justify-content-end mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/health-records(page=${currentPage - 1}, size=${size}, bloodType=${bloodType}, startDate=${startDate}, endDate=${endDate})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="p : ${#numbers.sequence(1, totalPages)}" th:classappend="${p == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/health-records(page=${p}, size=${size}, bloodType=${bloodType}, startDate=${startDate}, endDate=${endDate})}" th:text="${p}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/health-records(page=${currentPage + 1}, size=${size}, bloodType=${bloodType}, startDate=${startDate}, endDate=${endDate})}">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

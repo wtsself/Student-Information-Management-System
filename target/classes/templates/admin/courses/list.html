@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>课程管理 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-book me-2"></i>课程管理
+                    </h2>
+                    <a th:href="@{/admin/courses/add}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>添加课程
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <!-- 筛选表单 -->
+                <div class="card shadow mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-search me-2"></i>筛选条件</h6>
+                    </div>
+                    <div class="card-body">
+                        <form class="row g-3" method="get" th:action="@{/admin/courses}">
+                            <div class="col-md-3">
+                                <label class="form-label">课程代码</label>
+                                <input class="form-control" name="courseCode" th:value="${courseCode}" placeholder="如 CS101">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">课程名称</label>
+                                <input class="form-control" name="courseName" th:value="${courseName}" placeholder="课程名称">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">授课教师</label>
+                                <input class="form-control" name="teacher" th:value="${teacher}" placeholder="教师">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">学期</label>
+                                <select class="form-select" name="semester">
+                                    <option value="">全部学期</option>
+                                    <option th:each="sem : ${semesters}" th:value="${sem}" th:text="${sem}" th:selected="${sem == semester}"></option>
+                                </select>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary me-2"><i class="fas fa-search me-1"></i>搜索</button>
+                                <a th:href="@{/admin/courses}" class="btn btn-secondary"><i class="fas fa-undo me-1"></i>重置</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>课程列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>课程代码</th>
+                                        <th>课程名称</th>
+                                        <th>学分</th>
+                                        <th>授课教师</th>
+                                        <th>学期</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="c : ${courses}">
+                                        <td th:text="${c.courseCode}">CS101</td>
+                                        <td th:text="${c.courseName}">计算机基础</td>
+                                        <td th:text="${c.credits}">3.0</td>
+                                        <td th:text="${c.teacher}">张教授</td>
+                                        <td th:text="${c.semester}">2023-2024-1</td>
+                                        <td>
+                                            <a th:href="@{/admin/courses/edit/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 分页与每页大小 -->
+        <div class="row mt-3">
+            
+            <div class="col-md-6" th:if="${totalPages > 1}">
+                <nav>
+                    <ul class="pagination justify-content-end mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/courses(page=${currentPage - 1}, size=${size}, courseCode=${courseCode}, courseName=${courseName}, teacher=${teacher}, semester=${semester})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="p : ${#numbers.sequence(1, totalPages)}" th:classappend="${p == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/courses(page=${p}, size=${size}, courseCode=${courseCode}, courseName=${courseName}, teacher=${teacher}, semester=${semester})}" th:text="${p}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/courses(page=${currentPage + 1}, size=${size}, courseCode=${courseCode}, courseName=${courseName}, teacher=${teacher}, semester=${semester})}">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

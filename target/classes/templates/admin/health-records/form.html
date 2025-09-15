@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title th:text="${healthRecord.id} != null ? '编辑健康信息' : '添加健康信息'">健康信息表单 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-heartbeat me-2"></i>
+                    <span th:text="${healthRecord.id} != null ? '编辑健康信息' : '添加健康信息'">添加健康信息</span>
+                </h2>
+                <a th:href="@{/admin/health-records}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>健康信息</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/health-records/save}" th:object="${healthRecord}" method="post">
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">学生<span class="text-danger">*</span></label>
+                                    <select class="form-control" th:field="*{studentId}" required>
+                                        <option th:each="s : ${students}" th:value="${s.id}" th:text="${s.name}">张三</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">体检日期</label>
+                                    <input type="date" class="form-control" th:field="*{checkDate}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">身高(cm)</label>
+                                    <input type="number" step="0.1" class="form-control" th:field="*{height}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">体重(kg)</label>
+                                    <input type="number" step="0.1" class="form-control" th:field="*{weight}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">血型<span class="text-danger">*</span></label>
+                                    <select class="form-control" th:field="*{bloodType}" required>
+                                        <option value="">请选择</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="AB">AB</option>
+                                        <option value="O">O</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">左眼视力</label>
+                                    <input type="number" step="0.1" class="form-control" th:field="*{visionLeft}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">右眼视力</label>
+                                    <input type="number" step="0.1" class="form-control" th:field="*{visionRight}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">心率</label>
+                                    <input type="number" class="form-control" th:field="*{heartRate}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">收缩压</label>
+                                    <input type="number" class="form-control" th:field="*{bloodPressureSystolic}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">舒张压</label>
+                                    <input type="number" class="form-control" th:field="*{bloodPressureDiastolic}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">病史</label>
+                                    <textarea class="form-control" th:field="*{medicalHistory}" rows="3"></textarea>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">过敏史</label>
+                                    <textarea class="form-control" th:field="*{allergies}" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">紧急联系人</label>
+                                    <input class="form-control" th:field="*{emergencyContact}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">联系电话</label>
+                                    <input class="form-control" th:field="*{emergencyPhone}">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <a th:href="@{/admin/health-records}" class="btn btn-secondary me-2">取消</a>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>保存</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

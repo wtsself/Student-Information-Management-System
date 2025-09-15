@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>用户管理 - 学生信息管理系统</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-users me-2"></i>用户管理
+                    </h2>
+                    <a href="/admin/users/add" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>添加用户
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 用户列表 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>用户列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>用户名</th>
+                                        <th>角色</th>
+                                        <th>邮箱</th>
+                                        <th>状态</th>
+                                        <th>创建时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="user : ${users}">
+                                        <td th:text="${user.id}">1</td>
+                                        <td th:text="${user.username}">admin</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${user.role == 'ADMIN'} ? 'bg-danger' : 'bg-primary'"
+                                                  th:text="${user.roleDisplayName}">管理员</span>
+                                        </td>
+                                        <td th:text="${user.email}">admin@example.com</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${user.status == 1} ? 'bg-success' : 'bg-secondary'"
+                                                  th:text="${user.status == 1} ? '启用' : '禁用'">启用</span>
+                                        </td>
+                                        <td th:text="${#dates.format(user.createdTime, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                        <td>
+                                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    th:onclick="'deleteUser(' + ${user.id} + ')'">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <script>
+            function deleteUser(id) {
+                if (confirm('确定要删除这个用户吗？')) {
+                    // 这里应该调用删除API
+                    alert('删除功能待实现');
+                }
+            }
+        </script>
+    </th:block>
+</body>
+</html>

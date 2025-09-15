@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.student.mapper.HealthRecordMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="HealthRecordResultMap" type="com.student.entity.HealthRecord">
+        <id column="id" property="id"/>
+        <result column="student_id" property="studentId"/>
+        <result column="height" property="height"/>
+        <result column="weight" property="weight"/>
+        <result column="blood_type" property="bloodType"/>
+        <result column="vision_left" property="visionLeft"/>
+        <result column="vision_right" property="visionRight"/>
+        <result column="blood_pressure_systolic" property="bloodPressureSystolic"/>
+        <result column="blood_pressure_diastolic" property="bloodPressureDiastolic"/>
+        <result column="heart_rate" property="heartRate"/>
+        <result column="medical_history" property="medicalHistory"/>
+        <result column="allergies" property="allergies"/>
+        <result column="emergency_contact" property="emergencyContact"/>
+        <result column="emergency_phone" property="emergencyPhone"/>
+        <result column="check_date" property="checkDate"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <!-- 关联学生信息 -->
+        <association property="student" javaType="com.student.entity.Student">
+            <id column="student_id" property="id"/>
+            <result column="student_no" property="studentNo"/>
+            <result column="student_name" property="name"/>
+            <result column="student_major" property="major"/>
+            <result column="student_class" property="className"/>
+        </association>
+    </resultMap>
+
+    <!-- 根据学生ID查询健康记录 -->
+    <select id="findByStudentId" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        WHERE h.student_id = #{studentId}
+    </select>
+
+    <!-- 根据ID查询健康记录 -->
+    <select id="findById" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        WHERE h.id = #{id}
+    </select>
+
+    <!-- 查询所有健康记录 -->
+    <select id="findAll" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        ORDER BY h.created_time DESC
+    </select>
+
+    <!-- 分页查询健康记录 -->
+    <select id="findByPage" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        ORDER BY h.created_time DESC LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 根据血型查询健康记录 -->
+    <select id="findByBloodType" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        WHERE h.blood_type = #{bloodType}
+        ORDER BY h.created_time DESC
+    </select>
+
+    <!-- 根据体检日期范围查询健康记录 -->
+    <select id="findByCheckDateRange" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        WHERE h.check_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY h.check_date DESC
+    </select>
+
+    <!-- 多条件查询健康记录 -->
+    <select id="findByConditions" resultMap="HealthRecordResultMap">
+        SELECT h.*, s.student_no, s.name as student_name, s.major as student_major, s.class_name as student_class
+        FROM health_records h
+        LEFT JOIN students s ON h.student_id = s.id
+        <where>
+            <if test="bloodType != null and bloodType != ''">
+                AND h.blood_type = #{bloodType}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND h.check_date >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND h.check_date &lt;= #{endDate}
+            </if>
+        </where>
+        ORDER BY h.created_time DESC
+    </select>
+
+    <!-- 统计健康记录总数 -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM health_records
+    </select>
+
+    <!-- 根据条件统计健康记录数量 -->
+    <select id="countByConditions" resultType="int">
+        SELECT COUNT(*) FROM health_records
+        <where>
+            <if test="bloodType != null and bloodType != ''">
+                AND blood_type = #{bloodType}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND check_date >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND check_date &lt;= #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <!-- 插入健康记录 -->
+    <insert id="insert" parameterType="com.student.entity.HealthRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO health_records (student_id, height, weight, blood_type, vision_left, vision_right, 
+                                   blood_pressure_systolic, blood_pressure_diastolic, heart_rate, 
+                                   medical_history, allergies, emergency_contact, emergency_phone, check_date)
+        VALUES (#{studentId}, #{height}, #{weight}, #{bloodType}, #{visionLeft}, #{visionRight}, 
+                #{bloodPressureSystolic}, #{bloodPressureDiastolic}, #{heartRate}, 
+                #{medicalHistory}, #{allergies}, #{emergencyContact}, #{emergencyPhone}, #{checkDate})
+    </insert>
+
+    <!-- 更新健康记录 -->
+    <update id="update" parameterType="com.student.entity.HealthRecord">
+        UPDATE health_records SET
+            student_id = #{studentId},
+            height = #{height},
+            weight = #{weight},
+            blood_type = #{bloodType},
+            vision_left = #{visionLeft},
+            vision_right = #{visionRight},
+            blood_pressure_systolic = #{bloodPressureSystolic},
+            blood_pressure_diastolic = #{bloodPressureDiastolic},
+            heart_rate = #{heartRate},
+            medical_history = #{medicalHistory},
+            allergies = #{allergies},
+            emergency_contact = #{emergencyContact},
+            emergency_phone = #{emergencyPhone},
+            check_date = #{checkDate},
+            updated_time = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除健康记录 -->
+    <delete id="deleteById">
+        DELETE FROM health_records WHERE id = #{id}
+    </delete>
+
+    <!-- 根据学生ID删除健康记录 -->
+    <delete id="deleteByStudentId">
+        DELETE FROM health_records WHERE student_id = #{studentId}
+    </delete>
+
+    <!-- 批量删除健康记录 -->
+    <delete id="deleteByIds">
+        DELETE FROM health_records WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

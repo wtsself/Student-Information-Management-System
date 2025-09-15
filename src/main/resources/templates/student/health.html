@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>健康信息 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-heartbeat me-2"></i>健康信息
+                    </h2>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 健康信息 -->
+        <div class="row" th:if="${healthRecord}">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-heartbeat me-2"></i>体检信息
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary">基本信息</h6>
+                                <p><strong>身高：</strong><span th:text="${healthRecord.height}">175.0</span> cm</p>
+                                <p><strong>体重：</strong><span th:text="${healthRecord.weight}">70.0</span> kg</p>
+                                <p><strong>血型：</strong><span th:text="${healthRecord.bloodTypeDisplayName}">A型</span></p>
+                                <p><strong>BMI指数：</strong><span th:text="${healthRecord.calculateBMI()}">22.86</span></p>
+                                <p><strong>BMI等级：</strong>
+                                    <span class="badge" th:classappend="${healthRecord.getBMICategory() == '正常'} ? 'bg-success' : 'bg-warning'"
+                                          th:text="${healthRecord.getBMICategory()}">正常</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary">视力信息</h6>
+                                <p><strong>左眼视力：</strong><span th:text="${healthRecord.visionLeft}">1.2</span></p>
+                                <p><strong>右眼视力：</strong><span th:text="${healthRecord.visionRight}">1.2</span></p>
+                                
+                                <h6 class="text-primary mt-3">血压心率</h6>
+                                <p><strong>收缩压：</strong><span th:text="${healthRecord.bloodPressureSystolic}">120</span> mmHg</p>
+                                <p><strong>舒张压：</strong><span th:text="${healthRecord.bloodPressureDiastolic}">80</span> mmHg</p>
+                                <p><strong>血压等级：</strong>
+                                    <span class="badge" th:classappend="${healthRecord.getBloodPressureCategory() == '正常'} ? 'bg-success' : 'bg-warning'"
+                                          th:text="${healthRecord.getBloodPressureCategory()}">正常</span>
+                                </p>
+                                <p><strong>心率：</strong><span th:text="${healthRecord.heartRate}">72</span> 次/分</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h6 class="text-primary">病史信息</h6>
+                                <p><strong>病史：</strong><span th:text="${healthRecord.medicalHistory ?: '无'}">无</span></p>
+                                <p><strong>过敏史：</strong><span th:text="${healthRecord.allergies ?: '无'}">无</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary">紧急联系人</h6>
+                                <p><strong>联系人：</strong><span th:text="${healthRecord.emergencyContact}">李四</span></p>
+                                <p><strong>联系电话：</strong><span th:text="${healthRecord.emergencyPhone}">13800138002</span></p>
+                                <p><strong>体检日期：</strong><span th:text="${healthRecord.checkDate != null ? #temporals.format(healthRecord.checkDate, 'yyyy-MM-dd') : ''}">2024-01-01</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 如果没有健康信息 -->
+        <div class="row" th:unless="${healthRecord}">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    暂无健康信息，请联系管理员录入。
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

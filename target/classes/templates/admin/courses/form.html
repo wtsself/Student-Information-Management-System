@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title th:text="${course.id} != null ? '编辑课程' : '添加课程'">课程表单 - 学生信息管理系统</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-book me-2"></i>
+                    <span th:text="${course.id} != null ? '编辑课程' : '添加课程'">添加课程</span>
+                </h2>
+                <a th:href="@{/admin/courses}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>课程信息</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/courses/save}" th:object="${course}" method="post">
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">课程代码<span class="text-danger">*</span></label>
+                                    <input class="form-control" th:field="*{courseCode}" placeholder="如：CS101" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">课程名称<span class="text-danger">*</span></label>
+                                    <input class="form-control" th:field="*{courseName}" placeholder="请输入课程名称" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">学分<span class="text-danger">*</span></label>
+                                    <input type="number" step="0.5" min="0.5" class="form-control" th:field="*{credits}" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">授课教师</label>
+                                    <input class="form-control" th:field="*{teacher}" placeholder="教师姓名">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">学期</label>
+                                    <input class="form-control" th:field="*{semester}" placeholder="如：2024-2025-1">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <a th:href="@{/admin/courses}" class="btn btn-secondary me-2">取消</a>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>保存</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

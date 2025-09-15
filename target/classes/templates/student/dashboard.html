@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>学生仪表板 - 学生信息管理系统</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-user-graduate me-2"></i>学生仪表板
+                    </h2>
+                    <div class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy年MM月dd日')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 学生基本信息 -->
+        <div class="row mb-4" th:if="${student}">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-id-card me-2"></i>个人信息
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <i class="fas fa-user-circle fa-5x text-primary mb-3"></i>
+                                    <h4 th:text="${student.name}">学生姓名</h4>
+                                    <p class="text-muted" th:text="${student.studentNo}">学号</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>性别：</strong><span th:text="${student.gender}">性别</span></p>
+                                        <p><strong>专业：</strong><span th:text="${student.major}">专业</span></p>
+                                        <p><strong>班级：</strong><span th:text="${student.className}">班级</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>学籍状态：</strong>
+                                            <span class="badge bg-success" th:text="${student.statusDisplayName}">在读</span>
+                                        </p>
+                                        <p><strong>入学日期：</strong><span th:text="${student.enrollmentDate != null ? #temporals.format(student.enrollmentDate, 'yyyy-MM-dd') : ''}">入学日期</span></p>
+                                        <p><strong>联系电话：</strong><span th:text="${student.phone}">联系电话</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 统计信息 -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    平均绩点
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${gpa ?: '0.00'}">0.00</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    成绩记录
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${#lists.size(scores)}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    健康状态
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <span th:if="${healthRecord}" class="text-success">已记录</span>
+                                    <span th:unless="${healthRecord}" class="text-warning">未记录</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-heartbeat fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最近成绩 -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-chart-line me-2"></i>最近成绩
+                        </h6>
+                        <a href="/student/scores" class="btn btn-sm btn-primary">查看全部</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(scores)}" class="text-center text-muted py-4">
+                            <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                            <p>暂无成绩记录</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(scores)}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>课程名称</th>
+                                        <th>成绩</th>
+                                        <th>等级</th>
+                                        <th>学期</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="score, iterStat : ${scores}" th:if="${iterStat.index < 5}">
+                                        <td th:text="${score.course.courseName}">课程名称</td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${score.score >= 90} ? 'bg-success' : 
+                                                               (${score.score >= 80}) ? 'bg-primary' : 
+                                                               (${score.score >= 70}) ? 'bg-info' : 
+                                                               (${score.score >= 60}) ? 'bg-warning' : 'bg-danger'"
+                                                  th:text="${score.score}">成绩</span>
+                                        </td>
+                                        <td th:text="${score.gradeLevel}">等级</td>
+                                        <td th:text="${score.semester}">学期</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-list me-2"></i>快速导航
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/student/profile" class="list-group-item list-group-item-action">
+                                <i class="fas fa-id-card me-2"></i>个人信息
+                            </a>
+                            <a href="/student/scores" class="list-group-item list-group-item-action">
+                                <i class="fas fa-chart-line me-2"></i>成绩查询
+                            </a>
+                            <a href="/student/health" class="list-group-item list-group-item-action">
+                                <i class="fas fa-heartbeat me-2"></i>健康信息
+                            </a>
+                            <a href="/student/courses" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>课程信息
+                            </a>
+                            <a href="/student/score-statistics" class="list-group-item list-group-item-action">
+                                <i class="fas fa-chart-pie me-2"></i>成绩统计
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <style>
+            .border-left-primary {
+                border-left: 0.25rem solid #4e73df !important;
+            }
+            .border-left-success {
+                border-left: 0.25rem solid #1cc88a !important;
+            }
+            .border-left-info {
+                border-left: 0.25rem solid #36b9cc !important;
+            }
+            .text-xs {
+                font-size: 0.7rem;
+            }
+            .text-gray-300 {
+                color: #dddfeb !important;
+            }
+            .text-gray-800 {
+                color: #5a5c69 !important;
+            }
+        </style>
+    </th:block>
+</body>
+</html>

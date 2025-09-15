@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>管理员仪表板 - 学生信息管理系统</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="fas fa-tachometer-alt me-2"></i>管理员仪表板
+                    </h2>
+                    <div class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy年MM月dd日')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    学生总数
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalStudents}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    课程总数
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalCourses}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-book fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    成绩记录
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalScores}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    健康记录
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalHealthRecords}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-heartbeat fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 快速操作 -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-bolt me-2"></i>快速操作
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <a href="/admin/students/add" class="btn btn-outline-primary btn-block w-100">
+                                    <i class="fas fa-user-plus me-2"></i>添加学生
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="/admin/courses/add" class="btn btn-outline-success btn-block w-100">
+                                    <i class="fas fa-book-medical me-2"></i>添加课程
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="/admin/scores/add" class="btn btn-outline-info btn-block w-100">
+                                    <i class="fas fa-chart-line me-2"></i>录入成绩
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="/admin/health-records/add" class="btn btn-outline-warning btn-block w-100">
+                                    <i class="fas fa-heartbeat me-2"></i>健康记录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-list me-2"></i>管理菜单
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/admin/users" class="list-group-item list-group-item-action">
+                                <i class="fas fa-users me-2"></i>用户管理
+                            </a>
+                            <a href="/admin/students" class="list-group-item list-group-item-action">
+                                <i class="fas fa-user-graduate me-2"></i>学生管理
+                            </a>
+                            <a href="/admin/courses" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>课程管理
+                            </a>
+                            <a href="/admin/scores" class="list-group-item list-group-item-action">
+                                <i class="fas fa-chart-line me-2"></i>成绩管理
+                            </a>
+                            <a href="/admin/health-records" class="list-group-item list-group-item-action">
+                                <i class="fas fa-heartbeat me-2"></i>健康信息管理
+                            </a>
+                            <a href="/admin/health-statistics" class="list-group-item list-group-item-action">
+                                <i class="fas fa-chart-pie me-2"></i>健康统计
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <style>
+            .border-left-primary {
+                border-left: 0.25rem solid #4e73df !important;
+            }
+            .border-left-success {
+                border-left: 0.25rem solid #1cc88a !important;
+            }
+            .border-left-info {
+                border-left: 0.25rem solid #36b9cc !important;
+            }
+            .border-left-warning {
+                border-left: 0.25rem solid #f6c23e !important;
+            }
+            .text-xs {
+                font-size: 0.7rem;
+            }
+            .text-gray-300 {
+                color: #dddfeb !important;
+            }
+            .text-gray-800 {
+                color: #5a5c69 !important;
+            }
+        </style>
+    </th:block>
+</body>
+</html>

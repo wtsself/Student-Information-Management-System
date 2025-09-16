@@ -48,30 +48,20 @@
 
 ## 环境要求
 
-- JDK 8 或以上版本
-- MySQL 8.0 或以上版本
+- JDK 17 
+- MySQL 8.0 
 - Maven 3.6 或以上版本
 
 ## 安装和运行
 
-### 1. 克隆项目
-```bash
-git clone <项目地址>
-cd student-management-system
+
+### 数据库执行初始化脚本
+```text
+打开navicat，分别导入执行src\main\resources\sql目录下的init.sql和addsql.sql脚本以创建数据库和插入原始数据
+注意第一次用管理员登陆时，进入下面网址重置管理员密码：http://localhost:8080/student-management/debug/reset-admin
 ```
 
-### 2. 数据库配置
-1. 创建 MySQL 数据库：
-```sql
-CREATE DATABASE student_management DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-2. 执行初始化脚本：
-```bash
-mysql -u root -p student_management < src/main/resources/sql/init.sql
-```
-
-### 3. 修改配置文件
+### 修改配置文件
 编辑 `src/main/resources/application.yml` 文件，修改数据库连接信息：
 ```yaml
 spring:
@@ -81,16 +71,13 @@ spring:
     password: your_password
 ```
 
-### 4. 编译和运行
-```bash
-# 编译项目
-mvn clean compile
+###  编译和运行
+```text
+用IntelliJ IDEA打开项目并导入maven依赖后运行
 
-# 运行项目
-mvn spring-boot:run
 ```
 
-### 5. 访问系统
+###  访问系统
 打开浏览器访问：http://localhost:8080/student-management
 
 ## 默认账号
@@ -136,7 +123,6 @@ src/
 - **scores**：成绩表
 - **health_records**：健康信息表
 
-## 功能截图
 
 ### 登录页面
 - 美观的登录界面
@@ -186,10 +172,4 @@ src/
 4. 建议在生产环境中修改默认密码
 5. 定期备份数据库数据
 
-## 许可证
 
-本项目采用 MIT 许可证。
-
-## 联系方式
-
-如有问题或建议，请联系开发团队。
